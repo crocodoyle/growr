@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+	    <h1>{{ kid.first_name }} {{ kid.last_name }}</h1>
+	    
+			{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+	
+			<p>Most recent weight: {{ kid.weight }} kg</p>
+			<p>Most recent height: {{ kid.height }} cm</p>
+			
+			{% load staticfiles %}
+			<p><img src="{{ MEDIA_URL}}k{{ kid.id }}.png" /></p>
+			
+			
+			<div class="well">
+			<form action="{% url 'measure' kid.id %}" method="post">
+			{% csrf_token %}
+			
+				<div class="row">
+				<p>
+				<label>Weight</label><br />
+				<input type="number" name="weight" step="0.1" id="weight" value="{{ kid.weight }}" />
+				<p>
+				</div>
+				
+				
+				<div class="row">
+				<p>
+				<label>Height</label><br />
+				<input type="number" name="height" step="0.5" id="height" value="{{ kid.height }}" />
+				<p>
+				</div>
+				
+				<p>
+				<input type="submit" value="Save" />
+				<p>
+			</form>
+			</div>
+	</div>
+
+  </body>
+</html>
+
+
+
+
+
+
