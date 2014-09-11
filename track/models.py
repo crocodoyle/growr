@@ -8,7 +8,7 @@ class Kid(models.Model):
     weight = models.FloatField(null=True, blank=True, default = None)
     height = models.FloatField(null=True, blank=True, default = None)
     
-    born = models.DateField()
+    born = models.DateTimeField()
     
     male = models.BooleanField()
     
@@ -27,6 +27,8 @@ class Measurement(models.Model):
     height = models.FloatField()
     
     taken = models.DateTimeField(default=datetime.now, blank=True)
+    
+    child = models.ForeignKey(Kid)
     
     def __unicode__(self):
         return '{0} kg, {1} cm'.format(self.weight, self.height)

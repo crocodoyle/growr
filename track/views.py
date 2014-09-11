@@ -13,8 +13,12 @@ import graph, os, sys
 
 import numpy as np
 import matplotlib
+from django.db.models.fields.related import ForeignKey
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
+import datetime
+from datetime import timedelta
 
 from track.models import Kid, Measurement
 
@@ -25,16 +29,28 @@ def index(request):
 
 def display(request, kid_id):
     kid = get_object_or_404(Kid, id=kid_id)
-    
     data = graph.importData("/tmp/wtageinf.xls")
     
     #print >>sys.stderr, np.shape(data['age'])
     #print >>sys.stderr, np.shape(data['b'][0,:])
     
     for p in np.arange(9):
-        plt.plot(data['age'], data['b'][p][:])
-                  
-    print >>sys.stderr, '{0}/k{1}.png'.format(settings.MEDIA_ROOT, kid_id)
+        if p == 0 or p == 4 or p == 8:
+            plot_options = 'b-'
+        else:
+            plot_options = 'b--'
+            
+        plt.plot(data['age'], data['b'][p][:], plot_options)
+    
+    for m in kid.measurement_set.all():
+        
+        alive = m.taken - kid.born
+        years = (((alive.total_seconds()/60)/60)/24)/365
+
+        plt.plot(years, m.weight, 'ro')
+
+
+    #print >>sys.stderr, '{0}/k{1}.png'.format(settings.MEDIA_ROOT, kid_id)
     plt.savefig('{0}/k{1}.png'.format(settings.MEDIA_ROOT, kid_id))
     
     return render(request, 'track/display.html', {'kid': kid})    
@@ -55,16 +71,15 @@ def measure(request, kid_id):
         m = Measurement()
         m.weight = weight
         m.height = height
+        m.child = k
         
         k.weight = weight
         k.height = height
         
         k.save()
         m.save()
-
+        
         return HttpResponseRedirect(reverse('display', args=(k.id,)))
-    
-    #return HttpResponse("Measure me.  Bitch.")
 
 def update(request):
     os.chdir('/tmp/')
@@ -73,5 +88,5 @@ def update(request):
     data = graph.importData("/tmp/wtageinf.xls")
     
     
-    return HttpResponse('Yo, updated bitch')
+    #return HttpResponse('Yo, updated bitch')
 
