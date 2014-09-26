@@ -1,5 +1,5 @@
 import numpy as np
-import xlrd, sys
+import xlrd, xlwt, sys
 
 def importData(excel_file):
     try:        
@@ -28,3 +28,18 @@ def importData(excel_file):
         print >>sys.stderr, 'error: {0}'.format(e.message)
     finally:
         return data
+    
+def exportData(measurement_set, kid_id):
+    w = Workbook()
+    s = w.add_sheet('measurements')
+    
+    s.write(0, 0, 'weight')
+    s.write(0, 1, 'height')
+    
+    for i, m in measurement_set:       
+        s.write(i, 0, m.weight)
+        s.write(i, 1, m.height)
+        
+    w.save('/tmp/k{0}_data.xls')
+    
+    return 0

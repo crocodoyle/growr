@@ -9,7 +9,8 @@ urlpatterns = patterns('',
     
     url(r'^(?P<kid_id>\d+)/$', views.display, name='display'),
     url(r'^(?P<kid_id>\d+)/measure/$', views.measure, name='measure'),
-    url(r'update/', views.update, name='update')
+    url(r'update/', views.update, name='update'),
+    url(r'export/', views.export, name='export'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

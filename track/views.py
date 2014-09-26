@@ -88,5 +88,9 @@ def update(request):
     data = graph.importData("/tmp/wtageinf.xls")
     
     
-    #return HttpResponse('Yo, updated bitch')
-
+def export(request, measurement_set, child_id):
+    
+    graph.exportData(measurement_set, child_id)
+    
+   
+    return HttpResponseRedirect(reverse('display', args=(child_id,)))
